@@ -25,7 +25,7 @@
 
 		<!-- Signup Form -->
 
-			<form id="signup-form" method="post" action="#">
+			<form id="signup-form" method="post"> {% csrf_token %}
 				<input type="email" name="email" id="email" placeholder="Email Address" />
                 <input type="password" name="password" id="password" placeholder="your password" />
 				<input type="submit" value="Login" />
@@ -46,8 +46,6 @@
 				</ul>
 			</footer>
 
-		<!-- Scripts -->
-            <script src="{% static 'eventually/assets/js/main.js' %}"></script>
 
 	</body>
 </html>
