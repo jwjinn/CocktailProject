@@ -18,20 +18,29 @@
 
 		<!-- Header -->
 			<header id="header">
-				<h1>My Little Bartender</h1>
-				<p> 머신 러닝 기반 칵테일 프로그래밍<br />
-				</p>
+				<h1>회원 등록</h1>
 			</header>
 
 		<!-- Signup Form -->
+        <form id="signup-form" method="post" action="{% url 'register' %}">
+            signup-form있는거
+            {% csrf_token %}
 
-			<form id="signup-form" method="post" action="#">
-				<input type="email" name="email" id="email" placeholder="Email Address" />
-                <input type="password" name="password" id="password" placeholder="your password" />
-				<input type="submit" value="Login" />
-			</form>
+            <input type="email" name="email" id="email" placeholder="Email Address" />
+            <input type="submit" value="save" />
 
-            <a href = "{% url 'register' %}">Create an account</a>
+        </form>
+
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <input type="email" name="email" id="email" placeholder="Email Address" />
+            <input type="submit" value="save" />
+
+        </form>
+
+
+
+            
 
 		<!-- Footer -->
 			<footer id="footer">
