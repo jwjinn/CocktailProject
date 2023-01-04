@@ -13,6 +13,32 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="{% static 'forty/assets/css/main.css' %}" />
 		<noscript><link rel="stylesheet" href="{% static 'forty/assets/css/noscript.css' %}" /></noscript>
+         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            $(document).on('click', '#files_send', function () {
+                console.log("완료버튼 눌렀다.")
+    var formData = new FormData();
+
+    for(var i=0; i<$('#photo_upload')[0].files.length; i++){
+        formData.append('uploadFile', $('#photo_upload')[0].files[i]);
+    }
+
+    $.ajax({
+        url: '{% url 'imageAjax' %}',
+        data: formData,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        success: function (data) {
+            alert("이미지 업로드 성공");
+
+            console.log(data['private']);
+        }
+    });
+});
+    </script>
+
 	</head>
 	<body class="is-preload">
 
@@ -66,9 +92,16 @@
 							<section id="one">
 								<div class="inner">
 									<header class="major">
-										<h2>Sed amet aliquam</h2>
+										<h2>이미지 업로드</h2>
 									</header>
-									<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero. Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna.</p>
+
+                                    <form id="ajaxform" action="/upload" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="file" multiple id="photo_upload">
+                                        <output id="list"></output>
+                                        <input type="button" value="완료" id="files_send">
+                                    </form>
+
 								</div>
 							</section>
 
