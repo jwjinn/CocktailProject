@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os.path
 from pathlib import Path
 
-from key import Django_config
+from key import Django_config, MARIADB_CONFIG
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'upload',
+    'service',
 ]
 
 MIDDLEWARE = [
@@ -80,9 +81,14 @@ WSGI_APPLICATION = 'finalweb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': MARIADB_CONFIG['database'],
+        'USER': MARIADB_CONFIG['user'],
+        'PASSWORD': MARIADB_CONFIG['password'],
+        'HOST': MARIADB_CONFIG['host'],
+        'PORT': '3306',
+    },
+
 }
 
 

@@ -20,6 +20,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # 로그인 초기 화면
     path('', include('login.urls')),
+
+    # 업로드 로직용
     path('upload/', include('upload.urls')),
+
+    # 메인 서비스용
+    path('service/', include('service.urls'), name = 'service'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
