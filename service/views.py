@@ -47,7 +47,7 @@ def imageAjax(request):
     }
 
     img = request.FILES.get('uploadFile')
-    fs = FileSystemStorage(location='media/', base_url='media/')
+    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
     fs.save(img.name, img)
 
     return JsonResponse(context)
