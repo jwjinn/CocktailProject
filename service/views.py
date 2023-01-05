@@ -42,13 +42,10 @@ def image(request):
 
 @csrf_exempt
 def imageAjax(request):
-    print("imageAjax 호출")
     context = {
         'private' : 15
     }
 
-
-    print(request.FILES['uploadFile'])
     img = request.FILES['uploadFile']
     fs = FileSystemStorage(location='media/', base_url='media/')
     fs.save(img.name, img)
