@@ -46,7 +46,7 @@ def imageAjax(request):
         'private' : 15
     }
 
-    img = request.FILES['uploadFile']
+    img = request.FILES.get('uploadFile')
     fs = FileSystemStorage(location='media/', base_url='media/')
     fs.save(img.name, img)
 
