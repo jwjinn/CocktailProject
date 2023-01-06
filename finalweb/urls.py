@@ -18,13 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 로그인 초기 화면
     path('', include('login.urls')),
 
-    # 업로드 로직용
+    # TODO 나중에 제거할 것.
+    # 업로드 로직용(연습용)
     path('upload/', include('upload.urls')),
 
     # 메인 서비스용

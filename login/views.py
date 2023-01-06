@@ -35,7 +35,14 @@ def index(request):
             if (PasswordHasher().verify(dbPassword, password)):
                 print("비밀번호 일치한다.")
 
-
+                request.session['email'] = email
+                """
+                최초로 세션을 사용을 할려면, migrate를 해야 한다.
+                
+                python manage.py makemigrations
+                python manage.py migrate
+                
+                """
 
                 return redirect('service/')
 
@@ -68,4 +75,9 @@ def register(request):
 
 
         return redirect('index')
+
+
+def logout(request):
+    request.session.flush()
+    return redirect('index')
 
