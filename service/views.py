@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
+from service.models import Uploadimage
+from datetime import datetime
 
 import os
 from django.http import FileResponse
@@ -127,6 +129,12 @@ def imageAjax(request):
 
     img = request.FILES.get('uploadFile')
 
+    imageName = img.name
+    email = request.session['email']
+
+    uploadImage = Uploadimage(email=email, filename=imageName, register_date= datetime.now())
+
+    uploadImage.save()
     """
     로컬 테스트용: 서버 테스트용을 구별해서 주석을 제거할것.
     """
@@ -140,7 +148,7 @@ def imageAjax(request):
     ## 로컬 경로(주우진)
     # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
-    fs.save(img.name, img)
+    fs.save(imageName, img)
 
     return JsonResponse(context)
 
