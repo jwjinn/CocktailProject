@@ -5,6 +5,10 @@ from django.http import JsonResponse
 from argon2 import PasswordHasher
 from login.models import *
 
+
+from collections import OrderedDict
+import json
+
 # Create your views here.
 # https://arotein.tistory.com/22
 
@@ -67,11 +71,35 @@ def register(request):
         gender = request.POST['gender']
         age = int(request.POST['age'])
         phone_number = request.POST['phone_number']
+        hadoopLocation = "/user/"+email+"/photo"
 
         register = Userregister(email= email, password= password, name=name,
-                                gender=gender, age=age, phone_number=phone_number)
+                                gender=gender, age=age, phone_number=phone_number, hadooplocation=hadoopLocation)
 
         register.save()
+
+
+        # print(hadoopLocation)
+        #
+        # #https://computer-science-student.tistory.com/407
+        # #fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+        #
+        # dict = {'email': email,
+        #         'hadoop': hadoopLocation}
+        #
+        # with open('/home/joo/hadoopLocation/test.json', 'w') as f:
+        #      json.dump(dict, f)
+
+        """
+        json 파일의 갱신
+        """
+
+        # with open('/home/joo/hadoopLocation/test.json') as f:
+        #     d_update = json.load(f, object_pairs_hook = OrderedDict)
+        #
+        # print("기존: " + d_update)
+
+
 
 
         return redirect('index')
