@@ -141,7 +141,7 @@ def imageAjax(request):
 
     hadoopFileName = trimImageName + day
 
-    hadoopFileName = trimImageName[0:dotPosition] +":"+ day + trimImageName[dotPosition: len(trimImageName)]
+    hadoopFileName = trimImageName[0:dotPosition] +"-"+ day + trimImageName[dotPosition: len(trimImageName)]
 
 
     uploadImage = Uploadimage(email=email, filename=trimImageName, register_date= day, hadoopfilename= hadoopFileName)
