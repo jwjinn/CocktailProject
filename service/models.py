@@ -141,6 +141,16 @@ class Uploadimage(models.Model):
         db_table = 'uploadImage'
 
 
+class Uploadimagelog(models.Model):
+    email = models.CharField(max_length=20, blank=True, null=True)
+    filename = models.CharField(db_column='fileName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    register_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'uploadImageLog'
+
+
 class UploadBoard(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.TextField()

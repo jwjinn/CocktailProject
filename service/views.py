@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
-from service.models import Uploadimage
+from service.models import Uploadimage, Uploadimagelog
 from datetime import datetime
 
 import os
@@ -131,10 +131,13 @@ def imageAjax(request):
 
     imageName = img.name
     email = request.session['email']
+    day = datetime.now()
 
-    uploadImage = Uploadimage(email=email, filename=imageName, register_date= datetime.now())
+    uploadImage = Uploadimage(email=email, filename=imageName, register_date= day)
+    uploadImageLog = Uploadimagelog(email=email, filename=imageName, register_date=day)
 
     uploadImage.save()
+    uploadImageLog.save()
     """
     로컬 테스트용: 서버 테스트용을 구별해서 주석을 제거할것.
     """
@@ -146,9 +149,11 @@ def imageAjax(request):
     fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    #fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
-    fs.save(imageName, img)
+    trimImageName = imageName.replace(" ", "")
+
+    fs.save(trimImageName, img)
 
     return JsonResponse(context)
 
