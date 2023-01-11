@@ -134,6 +134,7 @@ class Hadoopregister(models.Model):
 class Uploadimage(models.Model):
     email = models.CharField(max_length=20, blank=True, null=True)
     filename = models.CharField(db_column='fileName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    hadoopfilename = models.CharField(db_column='hadoopFileName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     register_date = models.DateTimeField()
 
     class Meta:
@@ -144,6 +145,7 @@ class Uploadimage(models.Model):
 class Uploadimagelog(models.Model):
     email = models.CharField(max_length=20, blank=True, null=True)
     filename = models.CharField(db_column='fileName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    hadoopfilename = models.CharField(db_column='hadoopFileName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     register_date = models.DateTimeField()
 
     class Meta:

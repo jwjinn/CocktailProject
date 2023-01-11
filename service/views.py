@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import FileSystemStorage
 from service.models import Uploadimage, Uploadimagelog
 from datetime import datetime
+from pytz import timezone
 
 import os
 from django.http import FileResponse
@@ -134,10 +135,21 @@ def imageAjax(request):
 
 
     email = request.session['email']
-    day = datetime.now()
+    day = str(datetime.now(timezone('Asia/Seoul')))
 
-    uploadImage = Uploadimage(email=email, filename=trimImageName, register_date= day)
-    uploadImageLog = Uploadimagelog(email=email, filename=trimImageName, register_date=day)
+
+
+    inputDay = '(' + day + ')'
+
+    dotPosition = trimImageName.find('.')
+
+    hadoopFileName = trimImageName[0:dotPosition] + inputDay + trimImageName[dotPosition: len(trimImageName)]
+
+    hadoopFileName = hadoopFileName.replace(' ', '~')
+
+
+    uploadImage = Uploadimage(email=email, filename=trimImageName, register_date= day, hadoopfilename= hadoopFileName)
+    uploadImageLog = Uploadimagelog(email=email, filename=trimImageName, register_date=day, hadoopfilename=hadoopFileName)
 
     uploadImage.save()
     uploadImageLog.save()
@@ -152,11 +164,9 @@ def imageAjax(request):
     fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    #fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
-
-
-    fs.save(trimImageName, img)
+    fs.save(hadoopFileName, img)
 
     return JsonResponse(context)
 
