@@ -135,17 +135,13 @@ def imageAjax(request):
 
 
     email = request.session['email']
-    day = str(datetime.now(timezone('Asia/Seoul')))
-
-
-
-    inputDay = '(' + day + ')'
+    day = str(datetime.now(timezone('Asia/Seoul')).date())
 
     dotPosition = trimImageName.find('.')
 
-    hadoopFileName = trimImageName[0:dotPosition] + inputDay + trimImageName[dotPosition: len(trimImageName)]
+    hadoopFileName = trimImageName + day
 
-    hadoopFileName = hadoopFileName.replace(' ', '~')
+    hadoopFileName = trimImageName[0:dotPosition] +":"+ day + trimImageName[dotPosition: len(trimImageName)]
 
 
     uploadImage = Uploadimage(email=email, filename=trimImageName, register_date= day, hadoopfilename= hadoopFileName)

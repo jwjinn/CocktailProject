@@ -10,21 +10,15 @@
 
 # # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
-fileName = '매매가와상관관계.png'
-
-day = '2023-01-11 11:10:49.942577+09:00'
-
-inputDay = '(' + day + ')'
-print(fileName.find('.'))
-
-dotPosition = fileName.find('.')
-print('.위치: ' + str(dotPosition))
-
-print(fileName[0:dotPosition] + inputDay + fileName[dotPosition: len(fileName)])
-
-
 """
 8
 .위치: 8
 매매가와상관관계(2023-01-11 11:10:49.942577+09:00).png
 """
+
+
+from datetime import datetime
+from pytz import timezone
+
+print(datetime.now(timezone('Asia/Seoul')).date())
+
