@@ -130,11 +130,14 @@ def imageAjax(request):
     img = request.FILES.get('uploadFile')
 
     imageName = img.name
+    trimImageName = imageName.replace(" ", "")
+
+
     email = request.session['email']
     day = datetime.now()
 
-    uploadImage = Uploadimage(email=email, filename=imageName, register_date= day)
-    uploadImageLog = Uploadimagelog(email=email, filename=imageName, register_date=day)
+    uploadImage = Uploadimage(email=email, filename=trimImageName, register_date= day)
+    uploadImageLog = Uploadimagelog(email=email, filename=trimImageName, register_date=day)
 
     uploadImage.save()
     uploadImageLog.save()
@@ -151,7 +154,7 @@ def imageAjax(request):
     ## 로컬 경로(주우진)
     #fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
-    trimImageName = imageName.replace(" ", "")
+
 
     fs.save(trimImageName, img)
 
