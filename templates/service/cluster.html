@@ -44,13 +44,23 @@
 	</head>
 	<body class="is-preload">
 
+
+
 		<!-- Wrapper -->
 			<div id="wrapper">
 
 				<!-- Header -->
 				<!-- Note: The "styleN" class below should match that of the banner element. -->
-					<header id="header" class="alt style2">
-						<a href="index.html" class="logo"><strong>Forty</strong> <span>by HTML5 UP</span></a>
+					<header id="header" class="alt">
+						<a href="/service/" class="logo"><strong>Cocktail</strong></a>
+
+
+                            {% if login_session %}
+                                안녕하세요: {{ email }} <a href="/logout/"><button>로그아웃</button></a>
+
+
+                            {% endif %}
+
 						<nav>
 							<a href="#menu">Menu</a>
 						</nav>

@@ -12,9 +12,10 @@ urlpatterns = [
     path('ingredient/', views.ingredient, name = 'ingredient'),
 
 
-    # image url, ajax
+    # image url, ajax, cnn
     path('image/', views.image, name = 'image'),
     path('image/ajax', views.imageAjax, name = 'imageAjax'),
+    path('image/cnn', views.cnnModel, name = 'cnnModel'),
 
     #file Download
     path('downloadFile/', views.downloadFile, name = 'downloadFile'),
@@ -24,6 +25,13 @@ urlpatterns = [
 
     path('changeImage/', views.changeImage, name = 'changeImage'),
     path('tech/', views.tech, name = 'tech'),
+
+    #barlocation
     path('barLocation/', views.barLocation, name = 'barLocation'),
+    path('barLocation/geoInfo', views.barLocationInfo, name = 'geoInfo'),
+
+
+    # maptest
+    path('maptest/', views.maptest, name = 'maptest'),
 
 ]

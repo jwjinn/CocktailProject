@@ -8,6 +8,7 @@ from django.core.files.storage import FileSystemStorage
 from service.models import Uploadimage, Uploadimagelog
 from datetime import datetime
 from pytz import timezone
+from django.utils import timezone
 
 import os
 from django.http import FileResponse
@@ -26,6 +27,8 @@ True를 리턴할 경우에, '로그아웃' 버튼이 생기기 위해서.
 False를 리턴할 경우에, 현재 접속 아이디를 html에서 표현 가능하도록.
 
 """
+
+## 로그인 로그아웃 기능.
 def logInOut(request):
     context = {}
 
@@ -50,7 +53,7 @@ service/index에서
 리턴 False이면, index로 리다이렉트가 되도록.
 
 """
-
+## 로그인 확인
 def logInCheck(request):
     login_session = request.session.get('email', '')
 
@@ -135,7 +138,9 @@ def imageAjax(request):
 
 
     email = request.session['email']
-    day = str(datetime.now(timezone('Asia/Seoul')).date())
+    # day = str(datetime.now(timezone('Asia/Seoul')).date())
+
+    day = str(timezone.now().date())
 
     dotPosition = trimImageName.find('.')
 
@@ -157,13 +162,16 @@ def imageAjax(request):
 
 
     ## 서버용 경로
-    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
+    # fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+
+
+
+
 
     fs.save(hadoopFileName, img)
-
     return JsonResponse(context)
 
 
@@ -217,6 +225,52 @@ def barLocation(request):
         return redirect('/')
 
     # return render(request, 'service/barLocation.html')
+
+def barLocationInfo(request):
+    input_val = request.GET.get('input_val')
+
+    print(input_val)
+
+    context = {
+        'test':  input_val
+    }
+
+    return JsonResponse(context)
+
+def maptest(request):
+    return render(request, 'service/maptest.html')
+
+
+@csrf_exempt
+def cnnModel(request):
+    print("cnnModel 호출.")
+
+
+
+    img = request.FILES.get('uploadFile')
+    imageName = img.name
+
+    ## 장고 이미지 모델링시 입력될 이미지.
+    ## https://chagokx2.tistory.com/62
+    djangoFs = FileSystemStorage(location='media', base_url='media')
+    djangoFs.save(imageName, img)
+
+    print(djangoFs.open(imageName)) # 이미지 호출. 이 경로를 사용 혹은 바로 사용가능하면 사용.
+
+    """
+    example: 모델의 결과가 Alexander, Aviation, B-52, Bacardi
+    """
+
+    cocktail = ['Alexander', 'Aviation', 'B-52', 'Bacardi']
+
+    context = {
+        'cnnModel': 'cnnModel에서 왔다.',
+        'return': cocktail
+    }
+
+
+    return JsonResponse(context)
+
 
 
 
