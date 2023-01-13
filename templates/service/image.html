@@ -16,12 +16,13 @@
          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
-
+            var formData = new FormData();
             var returnCocktail;
+            var howToMake;
 
             $(document).on('click', '#files_send', function () {
                 console.log("완료버튼 눌렀다.")
-    var formData = new FormData();
+
 
     for(var i=0; i<$('#photo_upload')[0].files.length; i++){
         formData.append('uploadFile', $('#photo_upload')[0].files[i]);
@@ -37,41 +38,77 @@
         type: 'POST',
         success: function (data) {
             alert("이미지 업로드 성공");
-
-            $.ajax({
-                url: '{% url 'cnnModel' %}',
-                data: formData,
-                processData: false,
-                contentType: false,
-                type: 'POST',
-
-                success: function (data){
-                    console.log('모델링용 전송 완료.');
-                    console.log(data['cnnModel']);
-                    {#console.log(data['return']);#}
-
-                    returnCocktail = data['return'];
-
-                    console.log(returnCocktail);
-
+            clickTest();
                 }
-
             });
 
-
-        }
-    });
 });
-
 
 
     </script>
 
         <script>
+            django.gettext = window.gettext
 
-            console.log(returnCocktail);
+{#            이곳에서 ajax 따로 하자.#}
+            function clickTest(){
+                console.log("send버튼 눌렀다.")
 
+                $.ajax({
+                    url: '{% url 'cnnModel' %}',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log(data['cnnModel'])
+                        returnCocktail = data['return']
+                        howToMake = data['howToMake']
+
+
+
+                        var cocktailName = document.getElementsByClassName("cocktailName");
+                        var cocktailImage = document.getElementsByClassName("cocktailImage");
+                        var howTomakeDOM = document.getElementsByClassName("howToMake");
+
+                        {#칵테일 이름 조회#}
+                        cocktailName[0].innerHTML = returnCocktail[0]
+                        cocktailName[1].innerHTML = returnCocktail[1]
+                        cocktailName[2].innerHTML = returnCocktail[2]
+                        cocktailName[3].innerHTML = returnCocktail[3]
+
+                        {#  칵테일 그림 매핑 #}
+
+                        console.log("==================================");
+                        console.log(cocktailName);
+
+                        console.log(cocktailName[0]);
+                        console.log($(cocktailName[0]).text());
+
+                        {#cocktailImage[0].setAttribute("src", "/static/cnn/Alexander.jpg");#}
+                        cocktailImage[0].setAttribute("src", "/static/cnn/"+$(cocktailName[0]).text() + ".jpg");
+                        cocktailImage[1].setAttribute("src", "/static/cnn/"+$(cocktailName[1]).text() + ".jpg");
+                        cocktailImage[2].setAttribute("src", "/static/cnn/"+$(cocktailName[2]).text() + ".jpg");
+
+                       {#  칵테일 설명 리턴  #}
+
+                        {#howTomakeDOM[0].innerHTML = howToMake[0];#}
+                        console.log("==================================");
+                        console.log(howToMake[0]);
+                        howTomakeDOM[0].innerHTML=howToMake[0];
+                        howTomakeDOM[1].innerHTML=howToMake[1];
+                        howTomakeDOM[2].innerHTML=howToMake[2];
+                        howTomakeDOM[3].innerHTML=howToMake[3];
+
+
+
+
+                    }
+                });
+
+            }
         </script>
+
 
 	</head>
 	<body class="is-preload">
@@ -145,64 +182,58 @@
 							<section id="two" class="spotlights">
 								<section>
 									<a href="generic.html" class="image">
-										<img src="images/pic08.jpg" alt="" data-position="center center" />
+										<img alt="" data-position="center center" class="cocktailImage"/>
 									</a>
 									<div class="content">
 										<div class="inner">
 											<header class="major">
-												<h3 id="cocktail1">첫번째 칵테일</h3>
+												<h3 class="cocktailName">첫번째 칵테일</h3>
 											</header>
-											<p id="cocktail1_explain">Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
-											<ul class="actions">
-												<li><a href="generic.html" class="button">Learn more</a></li>
-											</ul>
+											<p class="howToMake">Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
+
 										</div>
 									</div>
 								</section>
 								<section>
 									<a href="generic.html" class="image">
-										<img src="images/pic09.jpg" alt="" data-position="top center" />
+										<img alt="" data-position="top center" class="cocktailImage" />
 									</a>
 									<div class="content">
 										<div class="inner">
 											<header class="major">
-												<h3 id="cocktail2">두번째 칵테일</h3>
+												<h3 class="cocktailName">두번째 칵테일</h3>
 											</header>
-											<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
-											<ul class="actions">
-												<li><a href="generic.html" class="button">Learn more</a></li>
-											</ul>
+											<p class="howToMake">Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
+
 										</div>
 									</div>
 								</section>
 								<section>
 									<a href="generic.html" class="image">
-										<img src="images/pic10.jpg" alt="" data-position="25% 25%" />
+										<img alt="" data-position="25% 25%" class="cocktailImage"/>
 									</a>
 									<div class="content">
 										<div class="inner">
 											<header class="major">
-												<h3 id="cocktail3">세번째 칵테일</h3>
+												<h3 class="cocktailName">세번째 칵테일</h3>
 											</header>
-											<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
-											<ul class="actions">
-												<li><a href="generic.html" class="button">Learn more</a></li>
-											</ul>
+											<p class="howToMake">Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
+
 										</div>
 									</div>
 								</section>
 							</section>
 
 						<!-- Three -->
-							<section id="three">
+							<section>
+
 								<div class="inner">
+
 									<header class="major">
-                                        <h3 id="cocktail4">네번째 칵테일</h3>
+                                        <h3 class="cocktailName">네번째 칵테일</h3>
 									</header>
-									<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus pharetra. Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus.</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button next">Get Started</a></li>
-									</ul>
+									<p class="howToMake">Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus pharetra. Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus.</p>
+
 								</div>
 							</section>
 

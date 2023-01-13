@@ -162,13 +162,12 @@ def imageAjax(request):
 
 
     ## 서버용 경로
-    # fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
+    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
-
-
-
+    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    # djangoFs = FileSystemStorage(location='media', base_url='media')
+    # djangoFs.save(imageName, img)
 
 
     fs.save(hadoopFileName, img)
@@ -253,19 +252,32 @@ def cnnModel(request):
     ## 장고 이미지 모델링시 입력될 이미지.
     ## https://chagokx2.tistory.com/62
     djangoFs = FileSystemStorage(location='media', base_url='media')
-    djangoFs.save(imageName, img)
 
     print(djangoFs.open(imageName)) # 이미지 호출. 이 경로를 사용 혹은 바로 사용가능하면 사용.
 
     """
-    example: 모델의 결과가 Alexander, Aviation, B-52, Bacardi
+    <example>
+    
+    input: djangoFs.open(imageName))
+    
+    output: cocktail = ['Alexander', 'Aviation', 'B-52', 'Bacardi']
+    
     """
 
     cocktail = ['Alexander', 'Aviation', 'B-52', 'Bacardi']
 
+
+    """
+    모델에서 나온 결과값 cocktail 리스트를 엘라스틱 쿼리로 집어넣는다.
+    
+    예시 결과값 howToMake
+    """
+    howToMake = ['aaaa', 'bbbb', 'cccc', 'dddd']
+
     context = {
         'cnnModel': 'cnnModel에서 왔다.',
-        'return': cocktail
+        'return': cocktail,
+        'howToMake': howToMake
     }
 
 
