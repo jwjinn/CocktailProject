@@ -95,6 +95,9 @@ def cluster(request):
 def clusterAjax(request):
 
     print("cluasterAjax 호출")
+    print(request.GET.get())
+
+    print(request)
     context = {
         'private' : 5
     }
@@ -160,14 +163,19 @@ def imageAjax(request):
 
     # TODO 서버용 경로와 로컬 테스트 경로를 구분해서 업로드해야 합니다. 깃헙 PUSH시, 서버 경로로.
 
-
+    """
+    하둡 저장용 경로.
+    """
     ## 서버용 경로
-    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
+    # fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
-    # djangoFs = FileSystemStorage(location='media', base_url='media')
-    # djangoFs.save(imageName, img)
+    fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+
+
+    # 모델링 전송용 경로 'media'폴더
+    djangoFs = FileSystemStorage(location='media', base_url='media')
+    djangoFs.save(imageName, img)
 
 
     fs.save(hadoopFileName, img)
@@ -228,6 +236,7 @@ def barLocation(request):
 def barLocationInfo(request):
     input_val = request.GET.get('input_val')
 
+
     print(input_val)
 
     context = {
@@ -240,6 +249,11 @@ def maptest(request):
     return render(request, 'service/maptest.html')
 
 
+
+
+"""
+이미지를 모델에 보내고, 설명까지 리턴하는 곳.
+"""
 @csrf_exempt
 def cnnModel(request):
     print("cnnModel 호출.")
