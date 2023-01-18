@@ -113,7 +113,9 @@ def search_django2(keyword):
 
 
 def gower(keyword):
-    df = pd.read_csv("static\csv\gower_df.csv")
+    # df = pd.read_csv("static\csv\gower_df.csv")
+    df = pd.read_csv("static/csv/gower_df.csv")
+
     temp = df[keyword].sort_values(ascending=True)[:5].index
     search_series = df.iloc[temp]["name"]
     search_list = search_series.to_list()
@@ -254,7 +256,7 @@ def imageAjax(request):
 # TODO: 다운이 되도록 수정을 할 것.
 def downloadFile(request):
     file_path = os.path.abspath("media/")
-    file_name = os.path.basename("media/오류.png")
+    file_name = os.path.basename("media/이미지1.jpeg")
     fs = FileSystemStorage(file_path)
 
     response = FileResponse(fs.open(file_name, "rb"), as_attachment=True)
