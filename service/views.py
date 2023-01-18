@@ -232,8 +232,7 @@ def imageAjax(request):
     하둡 저장용 경로.
     """
     ## 서버용 경로
-    # fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
-
+    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(채지훈)
     # fs = FileSystemStorage(
@@ -242,7 +241,7 @@ def imageAjax(request):
     # )
 
     ## 로컬 경로(주우진)
-    fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
 
     # 모델링 전송용 경로 'media'폴더
