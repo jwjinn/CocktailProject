@@ -168,7 +168,7 @@
 										<h2>이미지 업로드</h2>
 									</header>
 
-                                    <form id="ajaxform" action="/upload" method="post" enctype="multipart/form-data">
+                                    <form id="ajaxform" method="post" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <input type="file" multiple id="photo_upload">
                                         <output id="list"></output>

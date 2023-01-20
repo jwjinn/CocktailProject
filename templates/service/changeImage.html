@@ -12,8 +12,39 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="{% static 'forty/assets/css/main.css' %}" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<noscript><link rel="stylesheet" href="{% static 'forty/assets/css/noscript.css' %}" /></noscript>
 	</head>
+
+    <script>
+        var formData = new FormData();
+        var returnCocktail;
+        var howToMake;
+
+            $(document).on('click', '#files_send', function () {
+                console.log("완료버튼 눌렀다.")
+
+
+                for(var i=0; i<$('#photo_upload')[0].files.length; i++){
+                    formData.append('uploadFile', $('#photo_upload')[0].files[i]);
+                }
+
+
+    $.ajax({
+        url: '{% url 'changeImageAjax' %}',
+        data: formData,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        success: function (data) {
+            alert("이미지 업로드 성공");
+                }
+            });
+
+});
+
+    </script>
+
 	<body class="is-preload">
 
 		<!-- Wrapper -->
@@ -67,12 +98,17 @@
 							<section id="one">
 								<div class="inner">
 									<header class="major">
-										<h2>Sed amet aliquam</h2>
+										<h2>이미지 업로드</h2>
 									</header>
 
-                                    <form action="{% url 'downloadFile'  %}">
-        	                            <button type="submit">다운로드</button>
-    		                        </form>
+                                    <form id="ajaxform" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="file" multiple id="photo_upload">
+                                        <output id="list"></output>
+                                        <input type="button" value="완료" id="files_send">
+                                    </form>
+
+
 
 								</div>
 							</section>
@@ -86,12 +122,14 @@
 									<div class="content">
 										<div class="inner">
 											<header class="major">
-												<h3>Orci maecenas</h3>
+												<h3>이미지 다운로드</h3>
 											</header>
-											<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.</p>
-											<ul class="actions">
-												<li><a href="generic.html" class="button">Learn more</a></li>
-											</ul>
+
+                                            <form action="{% url 'downloadFile'  %}">
+        	                            <button type="submit">다운로드</button>
+    		                                </form>
+
+
 										</div>
 									</div>
 								</section>

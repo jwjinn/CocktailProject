@@ -3,6 +3,9 @@
 import os
 import sys
 
+from ganClass import *
+
+
 
 def main():
     """Run administrative tasks."""

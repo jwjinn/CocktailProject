@@ -16,9 +16,7 @@
 매매가와상관관계(2023-01-11 11:10:49.942577+09:00).png
 """
 
+str = '/home/joo/PycharmProjects/Projects/finalweb'
 
-from datetime import datetime
-from pytz import timezone
 
-print(datetime.now(timezone('Asia/Seoul')).date())
-
+str.fi

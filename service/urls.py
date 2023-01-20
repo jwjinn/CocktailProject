@@ -24,6 +24,9 @@ urlpatterns = [
 
 
     path('changeImage/', views.changeImage, name = 'changeImage'),
+    path('changeImage/ajax', views.changeImageAjax, name = 'changeImageAjax'),
+
+
     path('tech/', views.tech, name = 'tech'),
 
     #barlocation

@@ -21,6 +21,26 @@ import pandas as pd
 import numpy as np
 import json
 
+# gan 모델 임포트관련
+
+from .ganClass import *
+
+
+
+import torch
+import torchvision.transforms as transforms
+from torchvision.utils import save_image
+import PIL
+from PIL import Image
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+
+
+
+
+
 # Create your views here.
 
 # formdata 관련: https://uni2237.tistory.com/10
@@ -252,15 +272,19 @@ def imageAjax(request):
     return JsonResponse(context)
 
 
-# TODO: 다운이 되도록 수정을 할 것.
 def downloadFile(request):
+
+    email = request.session["email"]
+
     file_path = os.path.abspath("media/")
-    file_name = os.path.basename("media/이미지1.jpeg")
+    file_name = os.path.basename(f"media/{email}.png")
+
+
     fs = FileSystemStorage(file_path)
 
     response = FileResponse(fs.open(file_name, "rb"), as_attachment=True)
 
-    # response["Content-Disposition"] = 'attachment; filename="오류.png"'
+    response["Content-Disposition"] = 'attachment; filename="ttt.png"'
 
     return response
 
@@ -279,6 +303,25 @@ def changeImage(request):
 
     # return render(request, 'service/changeImage.html')
 
+@csrf_exempt
+def changeImageAjax(request):
+
+    email = request.session["email"]
+
+    context = {"private": 15}
+
+    img = request.FILES.get("uploadFile")
+
+    k = cover()
+
+
+    k.imageLocation(img)
+
+    k.saveLocation(f'{os.getcwd()}/media/{email}.png')
+    k.Gan_prc()
+
+
+    return JsonResponse(context)
 
 # 사용 기술
 def tech(request):
