@@ -163,7 +163,11 @@ class cover:
 
         #TODO 일단 내 컴퓨터 위치로 하드코딩함.
 
-        GAN = torch.load('/home/joo/PycharmProjects/Projects/finalweb/service/model/Gustave2_G_XtoY.pt', map_location=torch.device('cpu'))
+
+        GAN = torch.load(os.getcwd()+"/model/Gustave2_G_XtoY.pt", map_location=torch.device('cpu'))
+
+
+        # GAN = torch.load('/home/joo/PycharmProjects/Projects/finalweb/service/model/Gustave2_G_XtoY.pt', map_location=torch.device('cpu'))
         GAN.eval()
         image2 = self.resize_in(self.imageLocation)
         fake_Y = GAN(image2.to(self.device))
@@ -182,8 +186,8 @@ class cover:
 if __name__ == '__main__':
 
     k = cover()
-    k.imageLocation("./이미지1.jpeg")
-    k.saveLocation('output/str.png')
+    k.imageLocation("./이미지1.png")
+    k.saveLocation('media/gan/str.png')
 
     k.Gan_prc()
 

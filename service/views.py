@@ -232,10 +232,10 @@ def imageAjax(request):
     하둡 저장용 경로.
     """
     ## 서버용 하둡에 적재할
-    fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
+    # fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
 
     ## 로컬 경로(주우진)
-    # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
+    fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
     temp = cnnCover()
 
@@ -293,6 +293,9 @@ def changeImage(request):
 
 @csrf_exempt
 def changeImageAjax(request):
+
+    print("changeImageAjax 호출")
+
     email = request.session["email"]
 
     context = {"private": 15}
