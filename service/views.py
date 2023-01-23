@@ -23,22 +23,11 @@ import json
 
 # gan 모델 임포트관련
 
-from .ganClass import *
+from ganClass import *
 
+# cnn 모델 임포트관련
 
-
-import torch
-import torchvision.transforms as transforms
-from torchvision.utils import save_image
-import PIL
-from PIL import Image
-import torch.nn as nn
-import torch.nn.functional as F
-
-
-
-
-
+from cnnClass import *
 
 
 # Create your views here.
@@ -204,7 +193,7 @@ def image(request):
 
 @csrf_exempt
 def imageAjax(request):
-    context = {"private": 15}
+
 
     img = request.FILES.get("uploadFile")
 
@@ -242,31 +231,39 @@ def imageAjax(request):
 
     uploadImage.save()
     uploadImageLog.save()
-    """
-    로컬 테스트용: 서버 테스트용을 구별해서 주석을 제거할것.
-    """
+
 
     # TODO 서버용 경로와 로컬 테스트 경로를 구분해서 업로드해야 합니다. 깃헙 PUSH시, 서버 경로로.
 
     """
     하둡 저장용 경로.
     """
-    ## 서버용 경로
+    ## 서버용 하둡에 적재할
     fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
-
-    ## 로컬 경로(채지훈)
-    # fs = FileSystemStorage(
-    #     location=r"C:\Users\Luna\Desktop\DATA-WEB\media",
-    #     base_url=r"C:\Users\Luna\Desktop\DATA-WEB\media",
-    # )
 
     ## 로컬 경로(주우진)
     # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
+    temp = cnnCover()
 
-    # 모델링 전송용 경로 'media'폴더
-    djangoFs = FileSystemStorage(location='media', base_url='media')
-    djangoFs.save(imageName, img)
+    temp.setImage(img)
+
+    rankCnn = temp.keyValue()
+
+    # TODO: 이곳에서 엘라스틱과 연결을 할 것, context에 설명을 제조 방법을 추가해서 리턴할
+
+    """
+    예시 출력: [('Bramble', 2.0369181632995605), ('Cosmopolitan', 2.0368924140930176), ('Alexander', 1.8241112232208252), ('Kir', 1.7370887994766235)]
+    
+    점수 높은 상 위 4개가 리턴된다.것
+    
+    칵테일 이름 'Bramble', 'Cosmopolitan'과 같은 이름을 엘라스틱 쿼리에 입력을 해서, 주조방법을 리턴한다.
+    """
+
+    print(rankCnn)
+
+    context = {"private": 15,
+               "cnnResult": rankCnn}
 
     fs.save(hadoopFileName, img)
     return JsonResponse(context)
@@ -276,17 +273,19 @@ def downloadFile(request):
 
     email = request.session["email"]
 
-    file_path = os.path.abspath("media/")
-    file_name = os.path.basename(f"media/{email}.png")
+    file_path = os.path.abspath("media/gan/")
+    file_name = os.path.basename(f"media/gan/{email}.png")
 
 
     fs = FileSystemStorage(file_path)
 
     response = FileResponse(fs.open(file_name, "rb"), as_attachment=True)
 
-    response["Content-Disposition"] = 'attachment; filename="ttt.png"'
+    response["Content-Disposition"] = f'attachment; filename="{email}.png"'
 
     return response
+
+
 
 
 # 칵테일 사진 화풍변경
@@ -317,7 +316,7 @@ def changeImageAjax(request):
 
     k.imageLocation(img)
 
-    k.saveLocation(f'{os.getcwd()}/media/{email}.png')
+    k.saveLocation(f'{os.getcwd()}/media/gan/{email}.png')
     k.Gan_prc()
 
 

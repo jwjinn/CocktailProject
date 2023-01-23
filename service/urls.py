@@ -15,7 +15,7 @@ urlpatterns = [
     # image url, ajax, cnn
     path('image/', views.image, name = 'image'),
     path('image/ajax', views.imageAjax, name = 'imageAjax'),
-    path('image/cnn', views.cnnModel, name = 'cnnModel'),
+    # path('image/cnn', views.cnnModel, name = 'cnnModel'),
 
     #file Download
     path('downloadFile/', views.downloadFile, name = 'downloadFile'),
