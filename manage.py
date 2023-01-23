@@ -3,11 +3,6 @@
 import os
 import sys
 
-
-
-
-from cnnClass import *
-
 from ganClass import *
 
 

@@ -5,7 +5,6 @@ import PIL
 from PIL import Image
 import torch.nn as nn
 import torch.nn.functional as F
-import os
 
 
 class ResidualBlock(nn.Module):
@@ -15,9 +14,9 @@ class ResidualBlock(nn.Module):
         """
         Residual blocks help the model to effectively learn the transformation from one domain to another. 
         """
-        self.conv1 = deconv(in_channels=conv_dim, out_channels=conv_dim, kernel_size=3, stride=1, padding=1,
+        self.conv1 = conv(in_channels=conv_dim, out_channels=conv_dim, kernel_size=3, stride=1, padding=1,
                           instance_norm=True)
-        self.conv2 = deconv(in_channels=conv_dim, out_channels=conv_dim, kernel_size=3, stride=1, padding=1,
+        self.conv2 = conv(in_channels=conv_dim, out_channels=conv_dim, kernel_size=3, stride=1, padding=1,
                           instance_norm=True)
 
     def forward(self, x):
@@ -66,10 +65,10 @@ class CycleGenerator(nn.Module):
         """
 
         # Encoder layers
-        self.conv1 = deconv(in_channels=3, out_channels=conv_dim, kernel_size=4)  # (128, 128, 64)
-        self.conv2 = deconv(in_channels=conv_dim, out_channels=conv_dim * 2, kernel_size=4,
+        self.conv1 = conv(in_channels=3, out_channels=conv_dim, kernel_size=4)  # (128, 128, 64)
+        self.conv2 = conv(in_channels=conv_dim, out_channels=conv_dim * 2, kernel_size=4,
                           instance_norm=True)  # (64, 64, 128)
-        self.conv3 = deconv(in_channels=conv_dim * 2, out_channels=conv_dim * 4, kernel_size=4,
+        self.conv3 = conv(in_channels=conv_dim * 2, out_channels=conv_dim * 4, kernel_size=4,
                           instance_norm=True)  # (32, 32, 256)
 
         # Residual blocks (number depends on input parameter)
@@ -106,72 +105,30 @@ class CycleGenerator(nn.Module):
         return out
 
 
+transform = transforms.ToPILImage()
+device = torch.device('cpu')
+convert_tensor = transforms.ToTensor()
+
+def resize_in(input_img) :
+    input1 = Image.open(input_img)
+    input2 = input1.resize((256,256))
+    input3 = convert_tensor(input2)
+    return input3
 
 
+def resize_out(output_img) :
+    save_image(output_img, 'str.png') # 저장 경로
+    img = Image.open('str.png')
+    output = img.resize((1080,1920))
+    return output
 
-class cover:
-
-    def __init__(self):
-
-        CycleGenerator()
-
-
-
-        print(os.getcwd())
-        print(type(os.getcwd()))
-
-        #/home/joo/PycharmProjects/Projects/finalweb/service/model
-
-        # print(os.getcwd() + '/Gustave2_G_XtoY.pt')
-        # self.modelLocation = os.getcwd() + '/Gustave2_G_XtoY.pt'
-
-
-
-
-        # self.location = fileLocation
-        # self.saveLocation = 'media/gan'
-
-        self.transform = transforms.ToPILImage()
-        self.device = torch.device('cpu')
-        self.convert_tensor = transforms.ToTensor()
-
-
-    def imageLocation(self, imageLocation):
-        self.imageLocation = imageLocation
-
-    def saveLocation(self, saveLocation):
-        self.saveLocation = saveLocation
-
-    def resize_in(self, input_img):
-        input1 = Image.open(input_img)
-        input2 = input1.resize((256,256))
-        input3 = self.convert_tensor(input2)
-        return input3
-
-    def resize_out(self, output_img):
-        # save_image(output_img, 'output/str.png') # 저장 경로
-        save_image(output_img, self.saveLocation)
-
-        # img = Image.open('output/str.png')
-        img = Image.open(self.saveLocation)
-        output = img.resize((1080,1920))
-        return output
-
-    def Gan_prc(self):
-        # GAN = torch.load('Gustave2_G_XtoY.pt', map_location=torch.device('cpu'))
-        # GAN = torch.load(self.modelLocation, map_location=torch.device('cpu'))
-
-        #TODO 일단 내 컴퓨터 위치로 하드코딩함.
-
-        GAN = torch.load('/home/joo/PycharmProjects/Projects/finalweb/service/model/Gustave2_G_XtoY.pt', map_location=torch.device('cpu'))
-        GAN.eval()
-        image2 = self.resize_in(self.imageLocation)
-        fake_Y = GAN(image2.to(self.device))
-        result = self.resize_out(fake_Y)
-        return fake_Y
-
-
-
+def Gan_prc(image) :
+    GAN = torch.load('Gustave2_G_XtoY.pt', map_location=torch.device('cpu'))
+    GAN.eval()
+    image2 = resize_in(image)
+    fake_Y = GAN(image2.to(device))
+    result = resize_out(fake_Y)
+    return fake_Y
 
 # sample ="F:/Final project/data/CNN/train/Piña colada (cocktail)162.jpg"
 # sample = "./이미지1.jpeg"
@@ -181,19 +138,5 @@ class cover:
 
 if __name__ == '__main__':
 
-    k = cover()
-    k.imageLocation("./이미지1.jpeg")
-    k.saveLocation('output/str.png')
-
-    k.Gan_prc()
-
-    # k.imageLocation('/home/joo/images/gan/이미지1.jpeg')
-    # k.saveLocation('/home/joo/images/gan/output/str.png')
-
-    # k.imageLocation('/home/joo/images/gan/year.png')
-    # k.saveLocation('/home/joo/images/gan/output/str.png')
-
-
-
-
+    Gan_prc("./이미지1.jpeg")
 
