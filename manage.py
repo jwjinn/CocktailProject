@@ -5,6 +5,8 @@ import sys
 
 from ganClass import *
 
+from cnnClass import *
+
 
 
 def main():

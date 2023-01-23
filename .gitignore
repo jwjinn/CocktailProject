@@ -5,6 +5,9 @@
 
 key.py
 
+Gustave2_G_XtoY.pt
+Resnet_torch.pt
+
 *.log
 *.pot
 *.pyc

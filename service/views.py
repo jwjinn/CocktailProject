@@ -13,7 +13,6 @@ from django.utils import timezone
 import os
 from django.http import FileResponse
 
-
 import elasticsearch
 from elasticsearch import helpers, Elasticsearch
 import csv
@@ -23,23 +22,11 @@ import json
 
 # gan 모델 임포트관련
 
-from .ganClass import *
+from ganClass import *
 
+# cnn 모델 임포트관련
 
-
-import torch
-import torchvision.transforms as transforms
-from torchvision.utils import save_image
-import PIL
-from PIL import Image
-import torch.nn as nn
-import torch.nn.functional as F
-
-
-
-
-
-
+from cnnClass import *
 
 # Create your views here.
 
@@ -56,6 +43,7 @@ True를 리턴할 경우에, '로그아웃' 버튼이 생기기 위해서.
 False를 리턴할 경우에, 현재 접속 아이디를 html에서 표현 가능하도록.
 
 """
+
 
 ## 로그인 로그아웃 기능.
 def logInOut(request):
@@ -82,6 +70,8 @@ service/index에서
 리턴 False이면, index로 리다이렉트가 되도록.
 
 """
+
+
 ## 로그인 확인
 def logInCheck(request):
     login_session = request.session.get("email", "")
@@ -96,7 +86,6 @@ def logInCheck(request):
 
 # 메인화면
 def mainView(request):
-
     if logInCheck(request):
         context = logInOut(request)
         print(request.session["email"])
@@ -144,7 +133,6 @@ def gower(keyword):
 
 # 내가 마신 칵테일과 비슷한 칵테일은?
 def cluster(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/cluster.html")
@@ -155,7 +143,6 @@ def cluster(request):
 
 # 비슷한 칵테일 추천
 def clusterAjax(request):
-
     key = request.build_absolute_uri().split("?")
     print(key[1])
     try:
@@ -178,7 +165,6 @@ def clusterAjax(request):
 
 # 지금 만들 수 있는 칵테일은?
 def ingredient(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/ingredient.html")
@@ -191,7 +177,6 @@ def ingredient(request):
 
 # 이 칵테일의 이름은?
 def image(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/image.html")
@@ -204,8 +189,6 @@ def image(request):
 
 @csrf_exempt
 def imageAjax(request):
-    context = {"private": 15}
-
     img = request.FILES.get("uploadFile")
 
     imageName = img.name
@@ -221,10 +204,10 @@ def imageAjax(request):
     hadoopFileName = trimImageName + day
 
     hadoopFileName = (
-        trimImageName[0:dotPosition]
-        + "-"
-        + day
-        + trimImageName[dotPosition : len(trimImageName)]
+            trimImageName[0:dotPosition]
+            + "-"
+            + day
+            + trimImageName[dotPosition: len(trimImageName)]
     )
 
     uploadImage = Uploadimage(
@@ -242,49 +225,54 @@ def imageAjax(request):
 
     uploadImage.save()
     uploadImageLog.save()
-    """
-    로컬 테스트용: 서버 테스트용을 구별해서 주석을 제거할것.
-    """
 
     # TODO 서버용 경로와 로컬 테스트 경로를 구분해서 업로드해야 합니다. 깃헙 PUSH시, 서버 경로로.
 
     """
     하둡 저장용 경로.
     """
-    ## 서버용 경로
+    ## 서버용 하둡에 적재할
     fs = FileSystemStorage(location='/home/jwjinn/attachement/images', base_url='/home/jwjinn/attachement/images')
-
-    ## 로컬 경로(채지훈)
-    # fs = FileSystemStorage(
-    #     location=r"C:\Users\Luna\Desktop\DATA-WEB\media",
-    #     base_url=r"C:\Users\Luna\Desktop\DATA-WEB\media",
-    # )
 
     ## 로컬 경로(주우진)
     # fs = FileSystemStorage(location='/home/joo/images', base_url='/home/joo/images')
 
+    temp = cnnCover()
 
-    # 모델링 전송용 경로 'media'폴더
-    djangoFs = FileSystemStorage(location='media', base_url='media')
-    djangoFs.save(imageName, img)
+    temp.setImage(img)
+
+    rankCnn = temp.keyValue()
+
+    # TODO: 이곳에서 엘라스틱과 연결을 할 것, context에 설명을 제조 방법을 추가해서 리턴할
+
+    """
+    예시 출력: [('Bramble', 2.0369181632995605), ('Cosmopolitan', 2.0368924140930176), ('Alexander', 1.8241112232208252), ('Kir', 1.7370887994766235)]
+
+    점수 높은 상 위 4개가 리턴된다.것
+
+    칵테일 이름 'Bramble', 'Cosmopolitan'과 같은 이름을 엘라스틱 쿼리에 입력을 해서, 주조방법을 리턴한다.
+    """
+
+    print(rankCnn)
+
+    context = {"private": 15,
+               "cnnResult": rankCnn}
 
     fs.save(hadoopFileName, img)
     return JsonResponse(context)
 
 
 def downloadFile(request):
-
     email = request.session["email"]
 
-    file_path = os.path.abspath("media/")
-    file_name = os.path.basename(f"media/{email}.png")
-
+    file_path = os.path.abspath("media/gan/")
+    file_name = os.path.basename(f"media/gan/{email}.png")
 
     fs = FileSystemStorage(file_path)
 
     response = FileResponse(fs.open(file_name, "rb"), as_attachment=True)
 
-    response["Content-Disposition"] = 'attachment; filename="ttt.png"'
+    response["Content-Disposition"] = f'attachment; filename="{email}.png"'
 
     return response
 
@@ -293,7 +281,6 @@ def downloadFile(request):
 
 
 def changeImage(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/changeImage.html")
@@ -303,9 +290,9 @@ def changeImage(request):
 
     # return render(request, 'service/changeImage.html')
 
+
 @csrf_exempt
 def changeImageAjax(request):
-
     email = request.session["email"]
 
     context = {"private": 15}
@@ -314,18 +301,16 @@ def changeImageAjax(request):
 
     k = cover()
 
-
     k.imageLocation(img)
 
-    k.saveLocation(f'{os.getcwd()}/media/{email}.png')
+    k.saveLocation(f'{os.getcwd()}/media/gan/{email}.png')
     k.Gan_prc()
-
 
     return JsonResponse(context)
 
+
 # 사용 기술
 def tech(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/tech.html")
@@ -338,7 +323,6 @@ def tech(request):
 
 # 주변 칵테일 바의 위치는?
 def barLocation(request):
-
     if logInCheck(request):
         print("현재 로그인 이메일 " + request.session["email"])
         return render(request, "service/barLocation.html")
@@ -352,7 +336,6 @@ def barLocation(request):
 def barLocationInfo(request):
     input_val = request.GET.get("input_val")
 
-
     print(input_val)
 
     context = {"test": input_val}
@@ -364,11 +347,11 @@ def maptest(request):
     return render(request, "service/maptest.html")
 
 
-
-
 """
 이미지를 모델에 보내고, 설명까지 리턴하는 곳.
 """
+
+
 @csrf_exempt
 def cnnModel(request):
     print("cnnModel 호출.")
@@ -384,18 +367,18 @@ def cnnModel(request):
 
     """
     <example>
-    
+
     input: djangoFs.open(imageName))
-    
+
     output: cocktail = ['Alexander', 'Aviation', 'B-52', 'Bacardi']
-    
+
     """
 
     cocktail = ["Alexander", "Aviation", "B-52", "Bacardi"]
 
     """
     모델에서 나온 결과값 cocktail 리스트를 엘라스틱 쿼리로 집어넣는다.
-    
+
     예시 결과값 howToMake
     """
     howToMake = ["aaaa", "bbbb", "cccc", "dddd"]
